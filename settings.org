@@ -1,0 +1,231 @@
+
+#+STARTUP: logdone indent
+#+SEQ_TODO: TODO FRAGA WAITING | CANCELLED DONE
+
+
+#+SEQ_PROPERTY: Note
+#+OPTIONS: toc:nil author:nil
+
+
+* Emacs general
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+(setq display-line-numbers-type 'visual)
+(global-display-line-numbers-mode)    
+
+#+END_SRC
+** packages
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(delete '("gnu" . "https://elpa.gnu.org/packages/") package-archives)
+(package-initialize)
+;;(require 'use-package)
+#+END_SRC
+
+** theme
+#+BEGIN_SRC emacs-lisp
+
+(use-package modus-themes
+   :ensure t)
+(load-theme 'modus-vivendi t)
+
+#+END_SRC
+
+** Keys
+For navigating windows
+Ace-window is beautiful.
+I use the same kind of window navigation in i3 using.
+wmfocus https://github.com/svenstaro/wmfocus
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package ace-window
+:ensure t
+:bind ("M-o" . ace-window)
+:delight
+:config (ace-window-display-mode 1)
+)
+
+
+#+END_SRC
+
+* Ordbehandling
+Dont know why emacs thinks sentances end in two spaces. Not applicable in sweden.
+
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
+
+* Okategoriserat
+#+BEGIN_SRC emacs-lisp
+
+(use-package smartparens
+:ensure t)
+(smartparens-global-mode)
+(show-smartparens-global-mode)
+
+#+END_SRC
+
+* Programering
+** Python
+
+#+BEGIN_SRC emacs-lisp
+  (setq python-shell-interpreter "python3")
+#+END_SRC
+* Org
+
+** Editor
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'visual-line-mode)
+
+  ;;(use-package which-key
+  ;;   :ensure t
+  ;;   :config
+  ;;   (which-key-mode))
+
+#+END_SRC
+
+** Speed-keys
+# [2025-03-16 Sun] Just found this, beyond amazing. 
+
+#+BEGIN_SRC emacs-lisp
+(setq org-use-speed-commands t)
+#+END_SRC
+
+** Agenda
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-ca" 'org-agenda)
+#+END_SRC
+
+
+*** agenda files
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files "~/org/agenda.txt")
+#+END_SRC
+
+
+** Refile
+# not really using this. 
+#+BEGIN_SRC emacs-lisp
+;; (setq org-refile-use-outline-path 'file)
+;; (setq org-refile-allow-creating-parent-nodes 'confirm)
+#+END_SRC
+
+** Capture
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map "\C-cc" 'org-capture)
+
+  (setq org-default-notes-file "~/org/notes.org")
+
+  (setq
+    org-capture-templates
+      (quote
+       (("m" "Möte" entry
+         (file+headline "~/org/notes.org" "Möten")
+         "* MOTE %?")
+        ("t" "Task" entry
+         (file+headline "~/org/notes.org" "Attgöra")
+         "* TODO %?")
+        ("p" "Telefon (phone)" entry
+         (file+headline "~/org/notes.org" "Attgöra")
+         "* TODO Ring och fixa \\n %T"))))
+
+
+#+END_SRC
+
+
+** Export
+
+*** Latex
+Old stuff. Setting upp latex is always a pain.
+
+#+begin_src emacs-lisp
+ '(org-export-latex-classes
+   (quote
+    (("letter" "\\docuementclass[11pt]{letter}")
+     ("article" "\\documentclass[11pt]{article}"
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+     ("report" "\\documentclass[11pt]{report}"
+      ("\\part{%s}" . "\\part*{%s}")
+      ("\\chapter{%s}" . "\\chapter*{%s}")
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+     ("book" "\\documentclass[11pt]{book}"
+      ("\\part{%s}" . "\\part*{%s}")
+      ("\\chapter{%s}" . "\\chapter*{%s}")
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+     ("beamer" "\\documentclass{beamer}" org-beamer-sectioning))))
+ '(org-export-latex-default-packages-alist
+   (quote
+    (("" "fullpage" nil)
+     ("AUTO" "inputenc" t)
+     ("T1" "fontenc" nil)
+     ("" "fixltx2e" nil)
+     ("" "graphicx" t)
+     ("" "longtable" nil)
+     ("" "float" nil)
+     ("" "wrapfig" nil)
+     ("" "soul" t)
+     ("" "textcomp" t)
+     ("" "marvosym" t)
+     ("" "wasysym" t)
+     ("" "latexsym" t)
+     ("pdfborder={0,0,0}" "hyperref" nil)
+     ("" "amsmath" nil)
+     ("" "amssymb" t)
+     "\\tolerance=1000"
+     ("round" "natbib" nil))))
+ '(org-export-pdf-remove-logfiles nil)
+ '(org-fontify-done-headline t)
+ '(org-latex-default-packages-alist
+   (quote
+    (("AUTO" "inputenc" t)
+     ("T1" "fontenc" t)
+     ("" "fixltx2e" nil)
+     ("" "graphicx" t)
+     ("" "longtable" nil)
+     ("" "float" nil)
+     ("" "wrapfig" nil)
+     ("" "rotating" nil)
+     ("normalem" "ulem" t)
+     ("" "amsmath" t)
+     ("" "textcomp" t)
+     ("" "marvosym" t)
+     ("" "wasysym" t)
+     ("" "amssymb" t)
+     ("" "hyperref" nil)
+     "\\tolerance=1000"
+     ("" "fullpage" nil))))
+ '(org-latex-to-pdf-process
+   (quote
+    ("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -interaction nonstopmode -output-directory %o %f" "pdflatex -interaction nonstopmode -output-directory %o %f")))
+
+#+END_SRC
+
+
+
+* Helm och idomode
+
+#+BEGIN_SRC emacs-lisp
+(ido-mode t)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+(setq ido-create-new-buffer 'always)
+#+END_SRC
+
+
